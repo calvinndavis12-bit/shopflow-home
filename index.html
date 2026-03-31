@@ -340,4 +340,13 @@ async function submitForm(){
 
 // Smooth nav hide on scroll
 let lastY=0;
-const nav=documen
+const nav=document.querySelector('nav');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  nav.style.transform=y>lastY&&y>100?'translateY(-100%)':'translateY(0)';
+  nav.style.transition='transform .3s ease';
+  lastY=y;
+});
+</script>
+</body>
+</html>
