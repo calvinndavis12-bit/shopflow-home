@@ -299,16 +299,43 @@ footer{padding:40px 2rem;border-top:1px solid var(--border);display:flex;align-i
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-function submitForm(){
+async function submitForm(){
   const first=document.getElementById('f-first').value.trim();
+  const last=document.getElementById('f-last').value.trim();
   const email=document.getElementById('f-email').value.trim();
   const biz=document.getElementById('f-biz').value.trim();
-  if(!first||!email||!biz){
-    alert('Please fill in your name, business, and email.');return;
+  const website=document.getElementById('f-website').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  const industry=document.getElementById('f-industry').value;
+  if(!first||!email||!biz){alert('Please fill in your name, business, and email.');return;}
+  const btn=document.querySelector('.form-btn');
+  btn.disabled=true;btn.textContent='Sending...';
+  try{
+    const res=await fetch('https://formspree.io/f/mdapzyjr',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        name:first+' '+last,
+        email:email,
+        business:biz,
+        website:website,
+        phone:phone,
+        industry:industry,
+        _replyto:email,
+        _subject:'New Shopflow Demo Request — '+biz,
+      })
+    });
+    if(res.ok){
+      document.getElementById('form-body').style.display='none';
+      document.getElementById('form-success').style.display='block';
+    }else{
+      btn.disabled=false;btn.textContent='Request my free demo →';
+      alert('Something went wrong. Please try again or email calvin@tryshopflow.com directly.');
+    }
+  }catch(e){
+    btn.disabled=false;btn.textContent='Request my free demo →';
+    alert('Something went wrong. Please email calvin@tryshopflow.com directly.');
   }
-  // In production wire this to your CRM / email
-  document.getElementById('form-body').style.display='none';
-  document.getElementById('form-success').style.display='block';
 }
 
 // Smooth nav hide on scroll
