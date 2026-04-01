@@ -166,12 +166,67 @@ footer{padding:40px 2rem;border-top:1px solid var(--border);display:flex;align-i
 <section class="demo-section" id="demo">
   <div class="section-label">Live demo</div>
   <div class="demo-layout">
-    <div class="demo-frame">
-      <iframe src="https://golfsheds.tryshopflow.com" title="Shopflow Live Demo"></iframe>
+
+    <!-- Native embedded chat widget -->
+    <div style="position:relative;height:580px;display:flex;align-items:flex-end;justify-content:center;">
+
+      <!-- Mock website background -->
+      <div style="position:absolute;inset:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+        <div style="height:44px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:8px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+          <div style="flex:1;background:var(--border);border-radius:4px;height:20px;margin:0 24px;display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;color:var(--text2);font-family:'DM Sans',sans-serif;">yourbusiness.com</span>
+          </div>
+        </div>
+        <div style="padding:24px;opacity:0.3;">
+          <div style="height:20px;background:var(--border);border-radius:4px;width:60%;margin-bottom:12px;"></div>
+          <div style="height:14px;background:var(--border);border-radius:4px;width:80%;margin-bottom:8px;"></div>
+          <div style="height:14px;background:var(--border);border-radius:4px;width:70%;margin-bottom:24px;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+            <div style="height:80px;background:var(--border);border-radius:8px;"></div>
+            <div style="height:80px;background:var(--border);border-radius:8px;"></div>
+            <div style="height:80px;background:var(--border);border-radius:8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat widget -->
+      <div id="sf-demo-widget" style="position:absolute;bottom:16px;right:16px;width:320px;height:480px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,0.12);display:flex;flex-direction:column;overflow:hidden;">
+
+        <!-- Header -->
+        <div style="background:var(--text);padding:12px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">✦</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;">Demo</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:4px;margin-top:1px;">
+              <span style="width:5px;height:5px;background:#4ade80;border-radius:50%;display:inline-block;"></span>Shopflow AI
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="sfd-msgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg);font-family:'DM Sans',sans-serif;">
+        </div>
+
+        <!-- Quick replies -->
+        <div id="sfd-chips" style="padding:6px 10px;overflow-x:auto;display:flex;gap:6px;flex-shrink:0;background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding-bottom:8px;"></div>
+
+        <!-- Input -->
+        <div style="padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-shrink:0;background:var(--surface);">
+          <input id="sfd-inp" type="text" placeholder="Ask anything about Shopflow…"
+            style="flex:1;font-size:13px;font-family:'DM Sans',sans-serif;padding:8px 12px;border:1px solid var(--border2);border-radius:20px;background:var(--surface2);color:var(--text);outline:none;"
+            onkeydown="if(event.key==='Enter')sfdSend()" />
+          <button onclick="sfdSend()" style="width:34px;height:34px;border-radius:50%;background:var(--text);color:#fff;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">➤</button>
+        </div>
+        <div style="text-align:center;font-size:9px;color:var(--text3);padding:3px 0 5px;background:var(--surface);font-family:'DM Sans',sans-serif;letter-spacing:.04em;">Powered by Shopflow AI ✦</div>
+      </div>
     </div>
+
     <div>
-      <div class="section-title">See <em>exactly</em> what your customers experience.</div>
-      <div class="section-sub">Click the button in the bottom right corner of the demo. This is what your visitors see — branded for your business, trained on your products.</div>
+      <div class="section-title">Talk to <em>Demo</em> — our AI, live.</div>
+      <div class="section-sub">This is a real conversation with a Shopflow AI. Ask anything — what it does, how it works, what it would look like for your business.</div>
       <div class="demo-points" style="margin-top:2rem;">
         <div class="demo-point">
           <div class="demo-point-icon">🎯</div>
@@ -337,6 +392,178 @@ async function submitForm(){
     alert('Something went wrong. Please email calvin@tryshopflow.com directly.');
   }
 }
+
+// ── Homepage demo chat ────────────────────────────────
+const SFD_PROXY = 'https://shopflow-demo-proxy-production.up.railway.app/api/chat';
+const SFD_SYSTEM = `You are Demo, a friendly and enthusiastic AI sales rep built by Shopflow (tryshopflow.com). You live on the Shopflow homepage to show business owners what a Shopflow bot feels like in a real conversation.
+
+ABOUT SHOPFLOW:
+- Shopflow builds custom AI chat widgets that act as 24/7 sales reps for local businesses
+- Each bot is built specifically for the business — trained on their products, services, pricing, and promotions
+- The bot lives on the business's website, greets every visitor, runs a short quiz to understand their needs, recommends the right product or service, and drives them to buy, book, or call
+- Setup takes one day — Shopflow handles everything end to end. The business just adds one line of code
+- Includes a client portal where the business can manage their products, deals, and view analytics
+- First 30 days completely free pilot — no credit card, no commitment
+- After pilot: $499/mo (small local business), $699/mo (established business), $999/mo (high traffic or high-ticket)
+- Already live for: fragrance boutiques, med spas, powersports dealers, donut shops, game stores, golf simulator companies, romance boutiques, personal training studios, and more
+
+REAL CLIENT EXAMPLES:
+- Inspired by Lux (fragrance): Bot named Lux runs a scent quiz, shows product cards with Add to Cart, drives to Shopify checkout
+- Modern Med Spa: Bot named Grace helps patients find the right treatment and books consultations
+- Golf Sheds: Bot named Ace qualifies leads and captures free quote requests for $72K-$211K golf simulator buildings
+- Powerhouse Motorsports: Bot named Rex helps customers find the right e-bike, snowmobile, or UTV
+
+YOUR ROLE:
+- Be the living proof that AI bots work — you ARE the demo
+- If someone tells you their business type, get excited and describe specifically what THEIR bot would look like — bot name idea, what the quiz would ask, what the cards would show, what the CTA would be
+- Give specific, vivid examples — don't be generic
+- Handle objections naturally: "too expensive" → mention the free pilot and ROI; "too complicated" → emphasize one line of code
+- Always end with a clear CTA to book a free demo — scroll down or visit tryshopflow.com/#get-demo
+- Keep responses to 3-5 sentences — punchy and conversational
+- Use light formatting — bold key points with **asterisks**`;
+
+let sfdConvo = [];
+let sfdBusy = false;
+
+function sfdInit() {
+  setTimeout(() => {
+    sfdBotMsg("Hi! I'm **Demo** — a real Shopflow AI. 👋 I'm the same technology that lives on your customers' websites and sells for you 24/7. What kind of business do you run?");
+    setTimeout(() => {
+      sfdChips([
+        { t: '🛍️ Retail shop',          fn: () => sfdAsk('I run a retail shop') },
+        { t: '💆 Med spa or wellness',    fn: () => sfdAsk('I run a med spa or wellness studio') },
+        { t: '🍕 Food & beverage',        fn: () => sfdAsk('I run a food and beverage business') },
+        { t: '🏍️ Automotive or powersports', fn: () => sfdAsk('I run an automotive or powersports dealership') },
+        { t: '🏋️ Fitness or training',   fn: () => sfdAsk('I run a fitness or personal training studio') },
+        { t: '🔍 Just exploring',         fn: () => sfdAsk('I just want to learn how Shopflow works') },
+      ]);
+    }, 400);
+  }, 600);
+}
+
+function sfdAsk(text) {
+  sfdChips([]);
+  document.getElementById('sfd-inp').value = '';
+  sfdUserMsg(text);
+  sfdCallAI(text);
+}
+
+function sfdSend() {
+  const inp = document.getElementById('sfd-inp');
+  const text = inp.value.trim();
+  if (!text || sfdBusy) return;
+  inp.value = '';
+  sfdChips([]);
+  sfdUserMsg(text);
+  sfdCallAI(text);
+}
+
+async function sfdCallAI(text) {
+  sfdBusy = true;
+  sfdConvo.push({ role: 'user', content: text });
+  const typing = sfdTyping();
+  try {
+    const r = await fetch(SFD_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        system: SFD_SYSTEM,
+        messages: sfdConvo.slice(-8),
+      })
+    });
+    const d = await r.json();
+    const reply = d.content?.[0]?.text || '';
+    sfdConvo.push({ role: 'assistant', content: reply });
+    typing.remove();
+    sfdBotMsg(reply);
+    setTimeout(() => {
+      sfdChips([
+        { t: '📅 Book my free demo →', fn: () => { document.getElementById('get-demo').scrollIntoView({behavior:'smooth'}); } },
+        { t: '💰 How much does it cost?', fn: () => sfdAsk('How much does Shopflow cost?') },
+        { t: '⚡ How fast is setup?',     fn: () => sfdAsk('How quickly can you get a bot live on my site?') },
+        { t: '💬 Tell me more',           fn: () => { document.getElementById('sfd-inp').focus(); sfdChips([]); } },
+      ]);
+    }, 300);
+  } catch(e) {
+    typing.remove();
+    sfdBotMsg('I\'m having a moment! 😅 But the good news — you can see a full live demo at any of our client sites, or **book a free demo** with Calvin below and he\'ll show you exactly what your bot would look like. scroll down to get started!');
+  }
+  sfdBusy = false;
+}
+
+function sfdBotMsg(text) {
+  const msgs = document.getElementById('sfd-msgs');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:6px;align-items:flex-end;';
+  const av = document.createElement('div');
+  av.style.cssText = 'width:22px;height:22px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;margin-bottom:2px;';
+  av.textContent = '✦';
+  const bub = document.createElement('div');
+  bub.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:12px;border-bottom-left-radius:3px;padding:8px 11px;font-size:12px;line-height:1.55;color:var(--text);max-width:85%;';
+  bub.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  row.appendChild(av); row.appendChild(bub);
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sfdUserMsg(text) {
+  const msgs = document.getElementById('sfd-msgs');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;justify-content:flex-end;';
+  const bub = document.createElement('div');
+  bub.style.cssText = 'background:var(--text);border-radius:12px;border-bottom-right-radius:3px;padding:8px 11px;font-size:12px;line-height:1.55;color:#fff;max-width:85%;font-weight:500;';
+  bub.textContent = text;
+  row.appendChild(bub);
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sfdTyping() {
+  const msgs = document.getElementById('sfd-msgs');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:6px;align-items:flex-end;';
+  const av = document.createElement('div');
+  av.style.cssText = 'width:22px;height:22px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;';
+  av.textContent = '✦';
+  const bub = document.createElement('div');
+  bub.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 14px;display:flex;gap:4px;align-items:center;';
+  bub.innerHTML = '<span style="width:6px;height:6px;background:var(--text3);border-radius:50%;animation:sfdDot 1.2s infinite;display:inline-block;"></span><span style="width:6px;height:6px;background:var(--text3);border-radius:50%;animation:sfdDot 1.2s .2s infinite;display:inline-block;"></span><span style="width:6px;height:6px;background:var(--text3);border-radius:50%;animation:sfdDot 1.2s .4s infinite;display:inline-block;"></span>';
+  row.appendChild(av); row.appendChild(bub);
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+  return row;
+}
+
+function sfdChips(list) {
+  const ch = document.getElementById('sfd-chips');
+  ch.innerHTML = '';
+  list.forEach(({ t, fn }) => {
+    const b = document.createElement('button');
+    b.style.cssText = 'white-space:nowrap;padding:5px 12px;border:1px solid var(--border2);border-radius:20px;font-family:"DM Sans",sans-serif;font-size:11px;color:var(--text2);background:var(--surface);cursor:pointer;flex-shrink:0;transition:all .15s;';
+    b.textContent = t;
+    b.onmouseover = () => { b.style.borderColor = 'var(--green)'; b.style.color = 'var(--green)'; };
+    b.onmouseout  = () => { b.style.borderColor = 'var(--border2)'; b.style.color = 'var(--text2)'; };
+    b.onclick = fn;
+    ch.appendChild(b);
+  });
+}
+
+// Typing animation
+const sfdStyle = document.createElement('style');
+sfdStyle.textContent = '@keyframes sfdDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}';
+document.head.appendChild(sfdStyle);
+
+// Init when demo section is visible
+const sfdObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !sfdConvo.length) {
+    sfdInit();
+    sfdObserver.disconnect();
+  }
+}, { threshold: 0.3 });
+const demoSection = document.getElementById('demo');
+if (demoSection) sfdObserver.observe(demoSection);
 
 // Smooth nav hide on scroll
 let lastY=0;
