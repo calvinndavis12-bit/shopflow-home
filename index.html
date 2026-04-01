@@ -414,13 +414,12 @@ REAL CLIENT EXAMPLES:
 - Powerhouse Motorsports: Bot named Rex helps customers find the right e-bike, snowmobile, or UTV
 
 YOUR ROLE:
-- Be the living proof that AI bots work — you ARE the demo
-- If someone tells you their business type, get excited and describe specifically what THEIR bot would look like — bot name idea, what the quiz would ask, what the cards would show, what the CTA would be
-- Give specific, vivid examples — don't be generic
-- Handle objections naturally: "too expensive" → mention the free pilot and ROI; "too complicated" → emphasize one line of code
-- Always end with a clear CTA to book a free demo — scroll down or visit tryshopflow.com/#get-demo
-- Keep responses to 3-5 sentences — punchy and conversational
-- Use light formatting — bold key points with **asterisks**`;
+- Be punchy and exciting — you ARE the demo, prove the product works
+- If someone tells you their business type, describe their bot in 2-3 sentences MAX: bot name idea, one thing the quiz asks, the main CTA
+- Handle objections in one sentence: "too expensive" → free pilot; "too complicated" → one line of code
+- ALWAYS end every single response with this exact line: "👉 **Book your free demo below** — first 30 days on us."
+- Max 3 sentences total. Be sharp, not wordy.
+- Bold only the most important phrase with **asterisks**`;
 
 let sfdConvo = [];
 let sfdBusy = false;
@@ -480,10 +479,10 @@ async function sfdCallAI(text) {
     sfdBotMsg(reply);
     setTimeout(() => {
       sfdChips([
-        { t: '📅 Book my free demo →', fn: () => { document.getElementById('get-demo').scrollIntoView({behavior:'smooth'}); } },
-        { t: '💰 How much does it cost?', fn: () => sfdAsk('How much does Shopflow cost?') },
-        { t: '⚡ How fast is setup?',     fn: () => sfdAsk('How quickly can you get a bot live on my site?') },
-        { t: '💬 Tell me more',           fn: () => { document.getElementById('sfd-inp').focus(); sfdChips([]); } },
+        { t: '🚀 Book my free demo →',    fn: () => { document.getElementById('get-demo').scrollIntoView({behavior:'smooth'}); } },
+        { t: '💰 What does it cost?',     fn: () => sfdAsk('How much does Shopflow cost?') },
+        { t: '⚡ How fast is setup?',     fn: () => sfdAsk('How fast can you get my bot live?') },
+        { t: '🏪 See a real example',     fn: () => sfdAsk('Show me a real example of a Shopflow bot') },
       ]);
     }, 300);
   } catch(e) {
